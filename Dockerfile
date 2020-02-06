@@ -1,7 +1,7 @@
 FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu16.04
-LABEL maintainer caffe-maint@googlegroups.com
+LABEL maintainer wangtf1990@126.com
 
-ADD sources.list /etc/apt/
+ADD lib/SSH/caffe-ssh/docker/gpu/sources.list /etc/apt/
 RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         cmake \
@@ -41,9 +41,8 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python && \
     pip install easydict && \
     cd lib/SSH/caffe-ssh && \
     cd python && for req in $(cat requirements.txt) pydot; do python -m pip install $req; done && cd .. && \
-    make -j"$(nproc)" pycaffe
-
-RUN for req in $(cat requirements.txt) pydot; do pip install $req; done && \
+    make -j"$(nproc)" pycaffe && \
+    for req in $(cat requirements.txt) pydot; do pip install $req; done && \
     cd lib/SSH/lib && make && cd .. 
 #    export http_proxy='http://192.168.0.119:3128' && \
 #    bash scripts/download_ssh_model.sh && \

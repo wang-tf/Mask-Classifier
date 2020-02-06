@@ -12,8 +12,8 @@ Before build, you should:
 git clone -depth 1 https://github.com/wang-tf/Mask-Classifier.git
 cd lib/SSH/caffe-ssh
 bash scripts/download_ssh_model.sh
-# download caffe model
-# download demo videos
+# download caffe model from https://drive.google.com/file/d/1Ogew-mbiMqznzO3ok_T-IiqQGpq4OHw5
+# download demo videos from https://drive.google.com/drive/folders/1PSw1eDErcjLaOkIUxYXbLEacBNdaMjHQ
 ```
 
 ## Introduction
