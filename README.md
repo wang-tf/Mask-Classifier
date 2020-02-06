@@ -1,5 +1,21 @@
 # Mask Classifier
 
+## Docker
+This docker environment as bellow:
+- CUDA10.0
+- cudnn7.0
+- python3.5.2
+- tensorflow1.13.1
+
+Before build, you should:
+```
+git clone -depth 1 https://github.com/wang-tf/Mask-Classifier.git
+cd lib/SSH/caffe-ssh
+bash scripts/download_ssh_model.sh
+# download caffe model
+# download demo videos
+```
+
 ## Introduction
 
 This repository contains codes for training and evaluating the Mask Classifier model, which is mostly implemented in ***Python 3*** and ***Keras*** framework.

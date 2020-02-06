@@ -1,5 +1,6 @@
 keras
-tensorflow-gpu
+easydict
+tensorflow-gpu==1.13.1
 opencv-python
 numpy
 scipy
