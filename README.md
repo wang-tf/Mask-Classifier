@@ -1,6 +1,10 @@
 # Mask Classifier
 
 ## Docker
+There are some problems if we use cmake(https://blog.csdn.net/yiran103/article/details/89418750).
+
+So we use make here.
+
 This docker environment as bellow:
 - CUDA10.0
 - cudnn7.0
