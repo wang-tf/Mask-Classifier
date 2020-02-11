@@ -40,8 +40,9 @@ RUN ln -sf /usr/bin/python3 /usr/bin/python && \
     pip install --upgrade pip && \
     pip install easydict && \
     cd lib/SSH/caffe-ssh && \
-    cd python && for req in $(cat requirements.txt) pydot; do python -m pip install $req; done && cd .. && \
-    make -j"$(nproc)" pycaffe && \
+      cd python && for req in $(cat requirements.txt) pydot; do python -m pip install $req; done && cd .. && \
+      make -j"$(nproc)" pycaffe && \
+    cd ../../../ && \
     for req in $(cat requirements.txt) pydot; do pip install $req; done && \
     cd lib/SSH/lib && make && cd .. 
 #    export http_proxy='http://192.168.0.119:3128' && \

@@ -54,11 +54,12 @@ def get_model_memory_usage(batch_size, model):
     return gbytes
 
 
-def tf_init():
+def tf_init(per_process_gpu_memory_fraction):
     from keras.backend.tensorflow_backend import set_session
     import tensorflow as tf
 
-    config = tf.ConfigProto()
+    gpu_options=tf.GPUOptions(per_process_gpu_memory_fraction=per_process_gpu_memory_fraction)
+    config = tf.ConfigProto(gpu_options=gpu_options)
     # dynamically grow the memory used on the GPU
     config.gpu_options.allow_growth = True
     # to log device placement (on which device the operation ran)
@@ -66,6 +67,7 @@ def tf_init():
     sess = tf.Session(config=config)
     # set this TensorFlow session as the default session for Keras
     set_session(sess)
+    return sess
 
 
 def im_show(img, img_name='img', max_size=1024):
@@ -83,6 +85,7 @@ def im_show(img, img_name='img', max_size=1024):
 
 
 def SSH_init():
+    print('--DEBUG: ssh init')
     import caffe
     from utils.get_config import cfg, cfg_print, cfg_from_file
 

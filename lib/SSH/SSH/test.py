@@ -9,11 +9,14 @@ import os
 import sys
 import cv2
 import numpy as np
+import time
 
 from utils.get_config import cfg, get_output_dir
 from nms.nms_wrapper import nms
 from utils.test_utils import _get_image_blob, _compute_scaling_factor, visusalize_detections
 from utils.timer import Timer
+import caffe
+
 
 def forward_net(net, blob, im_scale, pyramid='False'):
     """
@@ -36,8 +39,12 @@ def forward_net(net, blob, im_scale, pyramid='False'):
     net_args = {'data': blob['data'].astype(np.float32, copy=False),
                       'im_info': blob['im_info'].astype(np.float32, copy=False)}
 
+    caffe.set_device(0)
+    caffe.set_mode_gpu()
+    p1 = time.time()
     blobs_out = net.forward(**net_args)
-
+    p2 = time.time()
+    print('p2-p1: ',p2-p1)
     if pyramid:
         # If we are in the pyramid mode, return the outputs for different modules separately
         pred_boxes = []
@@ -75,7 +82,7 @@ def detect(net, im_path='', thresh=0.05, visualize=False, timers=None, pyramid=F
     """
 
     #print('Detecting ...')
-
+    logs = []
     if not timers:
         timers = {'detect': Timer(),
                   'misc': Timer()}
@@ -127,7 +134,7 @@ def detect(net, im_path='', thresh=0.05, visualize=False, timers=None, pyramid=F
         plt_name = os.path.splitext(imfname)[0] + '_detections_{}'.format(net.name)
         visusalize_detections(im, cls_dets, plt_name=plt_name, visualization_folder=visualization_folder)
     timers['misc'].toc()
-    return cls_dets,timers
+    return cls_dets, timers, logs
 
 
 def test_net(net, imdb, thresh=0.05, visualize=False,no_cache=False,output_path=None):

@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package caffe.serving;
+option cc_enable_arenas = true;
+
+
+// open source marker; do not remove
+// PredictionService provides access to machine-learned models loaded by
+// model_servers.
+service PredictionService {
+  // Predict -- provides access to loaded TensorFlow model.
+  rpc Predict(PredictRequest) returns (PredictResponse);
+}
+
+// Metadata for an inference request such as the model name and version.
+message ModelSpec {
+  // Required servable name.
+  string name = 1;
+
+  // Optional version. Recommended to be left unset in the common case. Should
+  // be specified only when there is a strong version consistency requirement.
+  //
+  // When left unspecified, the system will serve the best available version.
+  // This is typically the latest version, though during version transitions,
+  // notably when serving on a fleet of instances, may be either the previous or
+  // new version.
+  int64 version = 2;
+
+  // A named signature to evaluate. If unspecified, the default signature will
+  // be used.
+  string signature_name = 3;
+}
+
+// PredictRequest specifies which TensorFlow model to run, as well as
+// how inputs are mapped to tensors and how outputs are filtered before
+// returning to user.
+message PredictRequest {
+  // Model Specification. If version is not specified, will use the latest
+  // (numerical) version.
+  ModelSpec model_spec = 1;
+
+  // Input tensors.
+  // Names of input tensor are alias names. The mapping from aliases to real
+  // input tensor names is stored in the SavedModel export as a prediction
+  // SignatureDef under the 'inputs' field.
+  map<string, bytes> inputs = 2;
+
+  // Output filter.
+  // Names specified are alias names. The mapping from aliases to real output
+  // tensor names is stored in the SavedModel export as a prediction
+  // SignatureDef under the 'outputs' field.
+  // Only tensors specified here will be run/fetched and returned, with the
+  // exception that when none is specified, all tensors specified in the
+  // named signature will be run/fetched and returned.
+  repeated string output_filter = 3;
+}
+
+// Response for PredictRequest on successful run.
+message PredictResponse {
+  // Effective Model Specification used to process PredictRequest.
+  ModelSpec model_spec = 2;
+
+  // Output tensors.
+  map<string, bytes> outputs = 1;
+}
+

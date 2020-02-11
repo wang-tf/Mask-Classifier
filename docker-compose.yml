@@ -1,0 +1,26 @@
+version: '2.3'
+
+services:
+    caffe:
+        image: caffe-test3
+        runtime: nvidia
+        ports:
+            - "9001:9001"
+        hostname: databox-caffe
+        container_name: databox-caffe
+        networks:
+            - databox-network
+        volumes:
+            - /etc/localtime:/etc/localtime
+            - ./prediction_service_server.py:/opt/caffe/prediction_service_server.py
+            - ./prediction_service_pb2.py:/opt/caffe/prediction_service_pb2.py
+            - ./prediction_service_pb2_grpc.py:/opt/caffe/prediction_service_pb2_grpc.py
+            - ./demo_image.py:/opt/caffe/demo_image.py
+            - ./lib/SSH/SSH/test.py:/opt/caffe/lib/SSH/SSH/test.py
+            - ./func.py:/opt/caffe/func.py
+        command: bash -c "python prediction_service_server.py"
+        #command: bash -c "python demo_image.py"
+            
+
+networks:
+    databox-network:

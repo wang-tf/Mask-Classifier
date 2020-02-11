@@ -113,6 +113,7 @@ def demo_video(net, video_path=0, save_out=False, out_path='./data/videos/output
 
     while (cap.isOpened()):
         ret, frame = cap.read()
+        frame = cv2.imread('./data/demo/demo1.jpg')
 
         if frame is not None and frame.shape[0] > 0 and frame.shape[1] > 0:
             start_time = time.time()
@@ -150,10 +151,36 @@ def demo_video(net, video_path=0, save_out=False, out_path='./data/videos/output
     cv2.destroyAllWindows()
 
 
-if __name__ == "__main__":
+def demo_image(net, image_path, save_out=False, out_path='./data/images/output.jpg'):
+    assert os.path.exists(image_path), image_path
+
+    frame = cv2.imread(image_path)
+    if frame is not None and frame.shape[0] > 0 and frame.shape[1] > 0:
+
+        # with videos we don't use SSH pyramid option to improve performance
+        for i in range(10):
+            start_time = time.time()
+            bboxes = detect(net, im=frame)[0]
+            frame = draw(None, bboxes, img=frame)
+
+            print("FPS: ", 1.0 / (time.time() - start_time))
+
+        if save_out:
+            cv.imwrite(out_path, frame)
+
+    return bboxes
+
+
+def main():
     net = SSH_init()
 
-    demo_video(net, visualize=True)
+    #demo_video(net, visualize=True)
     
     # uncomment below to run demo on video
-    # demo_video(net, './data/videos/demo3.MOV', save_out=True, visualize=True)
+    #demo_video(net, './data/videmo/test1.mp4', save_out=False, visualize=False)
+    demo_image(net, './data/demo/demo1.jpg', save_out=False)
+
+
+if __name__ == "__main__":
+    main()
+
